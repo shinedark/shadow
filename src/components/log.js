@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Header from './headerp';
-import {
-  Text,
-  View
-} from 'react-native';
-
+import { View, ScrollView } from 'react-native';
+import axios from 'axios';
+import JournalDetail from './journaldetail';
 
 
 var styles = {
@@ -13,8 +11,8 @@ var styles = {
   },
   slide3: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     backgroundColor: '#92BBD9'
   },
   text: {
@@ -25,13 +23,28 @@ var styles = {
 }
 
 class Log extends Component {
+
+  state = { albums: [] };
+
+  componentWillMount(){
+    axios.get('https://rallycoding.herokuapp.com/api/music_albums')
+      .then(response => this.setState({albums: response.data}));
+  }
+
+  renderAlbums(){
+   return  this.state.albums.map(album =>
+    <JournalDetail key={album.title} album={album} /> );
+  }
+
   render(){
     return(
       <View style={styles.wrapper} >
-          <Header headerText={'Profile'}/>
-          <View style={styles.slide3}>
-            <Text style={styles.text}>Hello!!</Text>
-          </View>
+          <Header headerText={'Store'}/>
+          <ScrollView  style={styles.slide3}>
+           
+             {this.renderAlbums()}
+            
+          </ScrollView>
       </View>
     );
   }
